@@ -1,0 +1,16 @@
+# Core LLM frameworks
+langchain>=0.2.0
+langgraph>=0.0.64
+# Streamlit for UI
+streamlit>=1.36.0
+# Exporting documents
+weasyprint>=62.3
+python-docx>=1.1.0
+reportlab>=4.0.0
+# Markdown + Syntax Highlighting
+markdown2>=2.5.0
+pygments>=2.18.0
+# HTTP requests (for Ollama API calls)
+requests>=2.32.3
+# Utility
+pydantic>=2.7.0
