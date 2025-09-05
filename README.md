@@ -1,82 +1,87 @@
-# 📝Multi-Agent Technical Article Generator
+# 📝 Multi-Agent Technical Article Generator  
 
-This project implements a Multi-Agent System (MAS) designed to autonomously generate in-depth technical articles (1000–1500 words) with optional code examples, and export them in PDF and DOCX formats.
+A **multi-agent system (MAS)** that autonomously generates **in-depth technical articles** (1000–1500 words) with optional code examples, and exports them in **PDF** and **DOCX** formats.  
 
------
+This project combines **LangGraph agents**, **local open-source LLMs**, and **flexible export pipelines** to deliver professional-quality articles, complete with structured formatting and syntax-highlighted code blocks.  
 
-## Features
+---
 
-- **Topic Analysis**: Parses and validates topic; refines scope and outlines subtopics
-- **Content Generation**: Creates detailed, structured text (intro, body, conclusion)
-- **Code Snippets**: Generates or embeds code examples (Python, JS, etc.) when requested
-- **Formatting**: Applies consistent heading styles, bullets, and syntax highlighting
-- **Export**: Generates downloadable PDF and DOCX documents
-- **Web Interface**: Streamlit-based UI for easy interaction
-  
------
+## 🚀 Features  
 
-## Architecture
+- **Topic Analysis** → Refines raw user input into structured outlines with subtopics and applications  
+- **Content Generation** → Produces full-length, well-structured technical articles (intro, body, conclusion)  
+- **Code Snippets** → Optionally generates 2–4 illustrative code examples (Python, JS, etc.)  
+- **Consistent Formatting** → Clean headings, lists, and highlighted code blocks in Markdown → DOCX/PDF  
+- **Export Options** → Download articles in:  
+  - **DOCX** (using `python-docx`)  
+  - **PDF** (via `ReportLab` or `PDFKit` for styled exports)  
+- **Web Interface** → Easy-to-use **Streamlit UI** for interaction  
 
-The system follows a sequential, agent-based pipeline architecture orchestrated by a central `OrchestratorAgent`. Each agent is a specialized module responsible for a distinct step in the article generation process. Data flows from one agent to the next, with each agent refining or adding to the output of the previous one.
+---
 
-This modular design makes the system easy to understand, maintain, and extend.
+## 🏗️ Architecture  
 
-### Workflow
+The system uses a **sequential agent-based pipeline** coordinated by an **OrchestratorAgent**. Each agent performs a specialized step and passes refined output forward.  
 
-1.  **Orchestrator (`OrchestratorAgent`)**: This is the central coordinator. It receives the initial topic from the user and directs the workflow by calling each agent in the correct sequence. It manages the state and passes the output of one agent as the input to the next.
+### Workflow  
 
-2.  **Topic Analyzer (`TopicAnalyzerAgent`)**:
-    -   **Input**: Raw topic string from the user.
-    -   **Process**: Uses an LLM to analyze the topic, refine its scope, and generate a structured outline including key sub-topics, related fields, and practical applications.
-    -   **Output**: A structured markdown text containing the topic analysis.
+1. **Orchestrator (`OrchestratorAgent`)**  
+   - Central coordinator  
+   - Manages workflow, passing data between agents  
 
-3.  **Content Generator (`ContentGeneratorAgent`)**:
-    -   **Input**: The structured analysis from the Topic Analyzer.
-    -   **Process**: Uses the analysis as a detailed prompt for an LLM to write a full-length technical article (1000-1500 words), complete with an introduction, main body, and conclusion.
-    -   **Output**: The complete article in markdown format.
+2. **Topic Analyzer (`TopicAnalyzerAgent`)**  
+   - Input: User-provided topic  
+   - Output: Structured outline with subtopics, scope, and related fields  
 
-4.  **Code Snippet Agent (`CodeSnippetAgent`)**: (Conditional Step)
-    -   **Input**: The generated article content.
-    -   **Process**: If the user requests code examples, this agent uses a code-specialized LLM (like CodeLlama) to identify relevant sections in the article and generate 2-4 illustrative code snippets.
-    -   **Output**: A markdown-formatted string containing code examples.
+3. **Content Generator (`ContentGeneratorAgent`)**  
+   - Expands the outline into a **1000–1500 word article**  
+   - Structured into intro, body, and conclusion  
 
-5.  **Formatter (`FormatterAgent`)**:
-    -   **Input**: The main article content and the optional code snippets.
-    -   **Process**: Merges the code snippets into the article (typically before the conclusion), cleans up whitespace, and extracts the main title.
-    -   **Output**: The final, clean, and fully assembled article in markdown.
+4. **Code Snippet Agent (`CodeSnippetAgent`)** *(optional)*  
+   - Adds 2–4 contextual code examples  
+   - Uses code-specialized LLM (e.g., **CodeLlama**)  
 
-6.  **Exporter (`ExporterAgent`)**:
-    -   **Input**: The final formatted content and the article title.
-    -   **Process**: Converts the markdown into two formats:
-        -   **PDF**: Uses `WeasyPrint` to convert styled HTML to PDF. It includes a fallback mechanism to `ReportLab` or a simple HTML file if `WeasyPrint` fails.
-        -   **DOCX**: Uses `python-docx` to create a well-structured Word document with proper headings and formatted code blocks.
-    -   **Output**: Paths to the newly created PDF and DOCX files.
+5. **Formatter (`FormatterAgent`)**  
+   - Merges code + text  
+   - Cleans up Markdown  
+   - Extracts main title  
 
------
+6. **Exporter (`ExporterAgent`)**  
+   - Converts final content into:  
+     - **DOCX** → Proper headings, code blocks with background  
+     - **PDF** → Choice between:  
+       - **ReportLab** (structured, lightweight)  
+       - **PDFKit** (styled, HTML-like)  
+   - Provides download paths  
 
-## Technical Stack
+---
 
-- **Backend Language**: Python
-- **LLM Frameworks**: LangChain, LangGraph
-- **Language Models**: Ollama (Mistral, Llama3, CodeLlama)
-- **PDF Generation**: WeasyPrint (primary), ReportLab (fallback), HTML (final fallback)
-- **DOCX Generation**: python-docx
-- **UI Framework**: Streamlit
-- **Markdown Processing**: markdown2, Pygments
+## 🛠️ Tech Stack  
 
----------
+- **Language** → Python  
+- **LLM Frameworks** → LangGraph, LangChain  
+- **Models** → Local Ollama models:  
+  - `mistral:latest`  
+  - `llama3:8b`  
+  - `codellama:7b`  
+- **Export** → DOCX (`python-docx`), PDF (`ReportLab`, `PDFKit`)  
+- **UI** → Streamlit  
+- **Markdown** → `markdown2`, `pygments`  
 
-## Prerequisites
+---
 
-1. **Python 3.10+** installed
-2. **Ollama** installed and running ([https://ollama.com](https://ollama.com))
-3. Required models pulled:
-   ```bash
-   ollama pull mistral:latest
-   ollama pull llama3:8b
-   ollama pull codellama:7b
-   ```
----------
+## 📦 Prerequisites  
+
+- **Python 3.10+**  
+- **Ollama** installed & running → [https://ollama.com](https://ollama.com)  
+- Pull required models:  
+
+```bash
+ollama pull mistral:latest
+ollama pull llama3:8b
+ollama pull codellama:7b
+```
+---
 
 ## Installation
 
@@ -90,7 +95,7 @@ This modular design makes the system easy to understand, maintain, and extend.
    ```bash
    pip install -r requirements.txt
    ```
---------
+---
 
 ## Usage
 
@@ -102,7 +107,7 @@ streamlit run ui/app.py
 
 The application includes a command-line test script to verify the end-to-end workflow.
 
---------
+---
 
 ## Project Structure
 
@@ -122,11 +127,10 @@ multi_agent_article_generator/
 │   ├── llm_loader.py
 │   ├── markdown_utils.py
 │   └── file_utils.py
-├── test_llm.py
 ├── requirements.txt
 └── README.md
 ```
------
+---
 
 ## How It Works
 
@@ -136,7 +140,7 @@ multi_agent_article_generator/
 4. **Formatting**: The Formatter Agent ensures consistent styling and structure
 5. **Export**: The Exporter Agent converts the final content to PDF and DOCX formats
 
---------
+---
 
 ## Troubleshooting
 
@@ -155,7 +159,7 @@ To fully resolve this issue:
 2. Or adjust your system PATH to prioritize the correct GTK libraries
 3. Or use a virtual environment with isolated dependencies
 
--------------
+---
 
 ### Model Not Found Errors
 
@@ -170,7 +174,7 @@ Check available models with:
 ollama list
 ```
 
---------------
+---
 
 ## Customization
 
@@ -180,7 +184,7 @@ You can customize the behavior by modifying:
 - Export styling in the exporter agent
 - UI elements in the Streamlit app
 
------------------
+---
 
 ## License
 
